@@ -1,0 +1,345 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Matrix Rain</title>
+    <meta charset="utf-8" />
+</head>
+<body>
+    <style>
+        body {
+            background-color: black;
+        }
+
+        .divHidden {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            color: #00FF00;
+            background-color: black;
+            border-style: solid;
+            border-color: #00FF00;
+            display: none;
+        }
+
+        .divTrace {
+            position: absolute;
+            left: auto;
+            top: auto;
+            z-index: 1;
+            color: #FFFF00;
+            background-color: black;
+            font-size: x-large;
+        }
+    </style>
+
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script>
+
+    <script>
+        y = [];
+
+        charWidth = 14;
+        charHeight = 14;
+
+        white = "#FFFFFF";
+        green = "#00FF00";
+        darkGreen = "#007700";
+        yellow = "#FFFF00";
+
+        xMax = 0;
+        yMax = 0;
+
+        textColor = green;
+
+        message = "WELCOME TO THE MATRIX";
+
+        phase1 = 100;
+        phase2 = phase1 + 30;
+        phase3 = phase2 + 50;
+
+        phaseIndex = 0;
+
+        randomDelay = false;
+
+        delay = 3000;
+
+        typeWriterSound = true;
+
+        audType = null;
+
+        function Main() {
+            Initialize();
+            WakeUpNeo();
+            TheMatrixHasYou();
+            FollowTheWhiteRabbit();
+            KnockKnockNeo();
+
+            typeWriterSound = false;
+
+            window.setTimeout(StartMatrixRain, delay += 3000);
+
+            for (var i = 1; i < 7; i++)
+                window.setTimeout(FadeInFadeOut, delay += 6000, i);
+
+            window.setTimeout(CallTransOpt, delay += 6000);
+            window.setTimeout(WarningCarrierAnomoly, delay += 4500);
+            window.setTimeout(TraceProgramRunning, delay += 4500);
+
+            for (var i = 7; i < 10; i++)
+            {
+                var offset = 6000;
+                if (i == 7)
+                    offset = 4500;
+                window.setTimeout(FadeInFadeOut, delay += offset, i);
+            }
+        }
+
+        function Initialize() {
+            RequestFullScreen();
+
+            var documentWidth = $(document).width();
+            var documentHeight = $(document).height();
+
+            xMax = Math.floor(documentWidth / charWidth) - 1;
+            yMax = Math.floor(documentHeight / charHeight) - 1;
+
+            var x;
+            for (x = 0; x < xMax; x++) {
+                y[y.length] = Math.floor(yMax * Math.random());
+            }
+
+            audType = document.getElementById("audType");
+        }
+
+        function RequestFullScreen() {
+            var body = document.body;
+            var requestMethod = body.requestFullScreen || body.webkitRequestFullScreen || body.mozRequestFullScreen || body.msRequestFullscreen;
+
+            if (requestMethod) { // Native full screen.
+                requestMethod.call(body);
+            } else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
+                var wscript = new ActiveXObject("WScript.Shell");
+                if (wscript !== null) {
+                    wscript.SendKeys("{F11}");
+                }
+            }
+            return false
+        }
+
+        function WakeUpNeo() {
+            Type("Wake up, Neo.");
+        }
+
+        function TheMatrixHasYou() {
+            Type("The Matrix has you...");
+        }
+
+        function FollowTheWhiteRabbit() {
+            Type("Follow the white rabbit.");
+        }
+
+        function KnockKnockNeo() {
+            Type("Knock, Knock, Neo.");
+        }
+
+        function Type(s) {
+            for (var i = 0, len = s.length; i < len; i++) {
+                setTimeout(WriteAt, delay, 1 + i, 1, s.charAt(i), true);
+                //setTimeout(PlayType, delay);
+                delay += Math.floor(10 * Math.random()) * 50;
+            }
+
+            setTimeout(RemoveVisibleDivs, delay += 1000);
+        }
+
+        //function PlayType() {
+        //    audType.play();
+        //}
+
+        function RemoveVisibleDivs() {
+            $("div:not(.divHidden)").remove();
+        }
+
+        function StartMatrixRain() {
+            $("div:not(.divHidden)").remove();
+            randomDelay = false;
+            window.setInterval(DoMatrixRain, 5);
+        }
+
+        function FadeInFadeOut(iDiv) {
+            if (iDiv == 9) {
+                $("#divTrace").text("");
+                $("#div" + iDiv).fadeIn(1000);
+            }
+            else
+                $("#div" + iDiv).fadeIn(1000).delay(3000).fadeOut(1000);
+        }
+
+        function CallTransOpt() {
+            var dateTimeNow = DateTimeNow();
+            $("#divTrace").removeClass("divHidden").addClass("divTrace").text("Call trans opt: received. " + dateTimeNow + " REC:Log>");
+            playFax();
+        }
+
+        function DateTimeNow() {
+            var now = new Date();
+            var MM = XX(now.getMonth() + 1);
+            var DD = XX(now.getDate());
+            var YY = XX(now.getFullYear() % 100);
+            var hh = XX(now.getHours());
+            var mm = XX(now.getMinutes());
+            var ss = XX(now.getSeconds());
+
+            return MM + "-" + DD + "-" + YY + " " + hh + ":" + mm + ":" + ss;
+        }
+
+        function XX(i) {
+            if (i < 10)
+                return "0" + i;
+            return i;
+        }
+
+        function playFax() {
+            var audFax = document.getElementById("audFax");
+
+            audFax.volume = 0.1;
+            audFax.play();
+        }
+
+        function WarningCarrierAnomoly() {
+            $("#divTrace").text("WARNING: carrier anomoly");
+        }
+
+        function TraceProgramRunning() {
+            $("#divTrace").text("trace program: running");
+        }
+
+        function DoMatrixRain() {
+            phaseIndex++;
+
+            var x = 0;
+
+            if (phaseIndex < phase1) {
+                for (x = 0; x < xMax; x++) {
+                    textColor = x % 10 == 1 ? white : green;
+                    WriteAt(x, y[x], RandomCharacter());
+
+                    textColor = x % 10 == 9 ? white : darkGreen;
+                    WriteAt(x, Y(y[x] - 2), RandomCharacter());
+
+                    WriteAt(x, Y(y[x] - 20), null);
+
+                    y[x] = Y(y[x] + 1);
+                }
+            }
+            else if (phase1 < phaseIndex && phaseIndex < phase2) {
+                for (x = 0; x < xMax; x++) {
+                    textColor = x % 10 == 9 ? white : darkGreen;
+                    WriteAt(x, y[x], RandomCharacter());
+
+                    y[x] = Y(y[x] + 1);
+                }
+            }
+            else if (phaseIndex > phase2) {
+                for (x = 0; x < xMax; x++) {
+                    WriteAt(x, y[x], null);
+
+                    WriteAt(x, Y(y[x] - 20), null);
+
+                    if (phaseIndex < phase3) {
+                        textColor = x % 10 == 9 ? white : darkGreen;
+                        WriteAt(x, Y(y[x] - 2), RandomCharacter());
+                    }
+
+                    y[x] = Y(y[x] + 1);
+                }
+            }
+
+            if (phaseIndex > (3 * phase1)) {
+                phaseIndex = 0;
+            }
+        }
+
+        function RandomCharacter() {
+            var random = Math.floor(5 * Math.random());
+            if (random == 0)
+                return String.fromCharCode('0'.charCodeAt() + Math.floor(10 * Math.random()));
+            else if (random == 1)
+                return String.fromCharCode('a'.charCodeAt() + Math.floor(27 * Math.random()));
+            else if (random == 2)
+                return String.fromCharCode('A'.charCodeAt() + Math.floor(27 * Math.random()));
+            else
+                return String.fromCharCode(' '.charCodeAt() + Math.floor(224 * Math.random()));
+        }
+
+        function Y(y) {
+            if (y < 0)
+                return y + yMax;
+            else if (y < yMax)
+                return y;
+            else
+                return 0;
+        }
+
+        function WriteAt(x, y, s, typeWriterSound) {
+            if (randomDelay)
+                DoRandomDelay();
+
+            var divId = x + "-" + y;
+
+            if ($("#" + divId).length > 0 || s == null)
+                $("#" + divId).remove();
+
+            if (s == null)
+                return;
+
+            if (s.length > 1)
+                for (i = 0; i < s.length; i++)
+                    WriteAt(x + i, y, s.charAt(i));
+            else {
+                var top = y * charHeight;
+                var left = x * charWidth;
+
+                $('<div/>', { text: s, id: divId })
+                    .appendTo('body')
+                    .css({ "position": "absolute", "text-align": "center", "top": top, "left": left, "color": textColor, "width": charWidth });
+            }
+        }
+
+        function DoRandomDelay() {
+            var milliseconds = Math.floor(10 * Math.random()) * 100;
+            Delay(milliseconds);
+        }
+
+        function Delay(milliseconds) {
+            var newDate = new Date();
+            for (var start = newDate.getTime() ; newDate.getTime() - start < milliseconds; newDate = new Date()) { }
+        }
+
+        $(document).ready(function () {
+            Main();
+        });
+    </script>
+
+    <div id="div1" class="divHidden">&nbsp;ENCRYPTED TRANMISSION RECEIVED FROM UNKNOWN SOURCE&nbsp;</div>
+    <div id="div2" class="divHidden">&nbsp;DECYPHERING...&nbsp;</div>
+    <div id="div3" class="divHidden">&nbsp;BEGIN TRANSMISSION&nbsp;</div>
+    <div id="div4" class="divHidden">&nbsp;THIS IS MORPHEUS...  I AM REACHING OUT TO YOU FROM OUTSIDE THE MATRIX.&nbsp;</div>
+    <div id="div5" class="divHidden">&nbsp;I AM SENDING ONE OF MY BEST CODERS POSING AS JULIO A. BELLO ON A MISSION.&nbsp;</div>
+    <div id="div6" class="divHidden">&nbsp;I NEED HIM TO ASSUME THE ROLE OF A SENIOR .NET DEVELOPER TO INFILTRATE THE MATRIX.&nbsp;</div>
+    <div id="div7" class="divHidden">&nbsp;WARNING...  THIS TRANSMISSION IS BEING TRACED.&nbsp;</div>
+    <div id="div8" class="divHidden">&nbsp;END TRANSMISSION&nbsp;</div>
+    <div id="div9" class="divHidden">&nbsp;SYSTEM FAILURE&nbsp;</div>
+    <div id="divTrace" class="divHidden"></div>
+    <div id="divAudio" class="divHidden">
+        <audio controls id="audType">
+            <source src="/Keyboard.mp3" type="audio/mpeg">
+        </audio>
+        <audio controls id="audFax">
+            <source src="/Fax-machine-sound.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+</body>
+</html>
